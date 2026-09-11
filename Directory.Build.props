@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <VALHEIM_INSTALL Condition="'$(VALHEIM_INSTALL)' == ''">$(MSBuildThisFileDirectory)</VALHEIM_INSTALL>
+    <VALHEIM_MANAGED Condition="'$(VALHEIM_MANAGED)' == ''">$(VALHEIM_INSTALL)valheim_Data/Managed</VALHEIM_MANAGED>
+    <BEPINEX_PATH Condition="'$(BEPINEX_PATH)' == ''">$(VALHEIM_INSTALL)BepInEx</BEPINEX_PATH>
+  </PropertyGroup>
+</Project>
