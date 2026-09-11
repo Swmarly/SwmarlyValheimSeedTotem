@@ -113,10 +113,6 @@ namespace SeedTotem
             {
                 GetPieceTable(configLocation.Value).m_pieces.Add(currentPiece);
             }
-            if (Player.m_localPlayer)
-            {
-                Player.m_localPlayer.AddKnownPiece(currentPiece.GetComponent<Piece>());
-            }
         }
 
         private PieceTable GetPieceTable(PieceLocation location)
