@@ -402,6 +402,13 @@ namespace SeedTotem
             return m_piece.m_name;
         }
 
+        // Added to Hoverable in Valheim 1.0. The original totem uses its own
+        // world-space marker, so the default hover position is appropriate.
+        public Vector3 GetHoverOffset()
+        {
+            return Vector3.zero;
+        }
+
         private string m_hoverText = "";
 
         public string GetHoverText()
