@@ -130,7 +130,7 @@ namespace SeedTotem
 
         private void UpdatePieceLocation(object sender, EventArgs e)
         {
-            seedTotemPrefabConfig.UpdatePieceLocation();
+            seedTotemPrefabConfig?.UpdatePieceLocation();
         }
 
         private void SettingsChanged(object sender, EventArgs e)
