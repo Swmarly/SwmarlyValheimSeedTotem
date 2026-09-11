@@ -25,7 +25,7 @@ namespace SeedTotem
     internal class SeedTotemMod : BaseUnityPlugin
     {
         public const string PluginGUID = "marcopogo.SeedTotem";
-        public const string PluginName = "Seed Totem";
+        public const string PluginName = "Swmarly Valheim Seed Totem";
         public const string PluginVersion = "4.3.4";
         public ConfigEntry<int> nexusID;
         private SeedTotemPrefabConfig seedTotemPrefabConfig;

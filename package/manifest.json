@@ -1,7 +1,7 @@
 {
-  "name": "SeedTotem",
+  "name": "SwmarlyValheimSeedTotem",
   "author": "Swmarly",
-  "description": "Place a Seed totem in your fields to automatically plant seeds around it. Give the totem a whack to harvest all plants around it.",
+  "description": "Unofficial Valheim 1.0 port of the original Seed Totem mod from Nexus Mods (mod 876). Automatically plant seeds and harvest nearby plants.",
   "version_number": "4.3.4",
   "website_url": "https://github.com/Swmarly/SwmarlyValheimSeedTotem",
   "dependencies": [

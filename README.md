@@ -1,6 +1,7 @@
 # SwmarlyValheimSeedTotem
 
-Valheim 1.0 port of the Seed Totem mod originally published as Nexus Mods mod 876.
+Unofficial Valheim 1.0 port of the Seed Totem mod originally published on Nexus Mods
+as mod 876. The published package is branded as Swmarly Valheim Seed Totem.
 
 The plugin keeps the original GUID (`marcopogo.SeedTotem`) and save keys so existing totems
 and configuration files remain compatible. Builds run in GitHub Actions against the current

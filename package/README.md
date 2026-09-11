@@ -1,4 +1,7 @@
-# Seed Totem
+# Swmarly Valheim Seed Totem
+
+This is an unofficial Valheim 1.0 port of the original Seed Totem mod, originally
+published on Nexus Mods as mod 876.
 
 The Seed Totem disperses stored seeds in an area around it.
 
