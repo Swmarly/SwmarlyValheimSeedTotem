@@ -106,5 +106,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SwmarlyValheimSeedTotem-4.3.4-Thunderstore
-          path: SwmarlyValheimSeedTotem-4.3.4-Thunderstore.zip
+          path: dist/SeedTotem/*
           if-no-files-found: error
