@@ -2,7 +2,7 @@ name: Build Seed Totem
 
 on:
   push:
-    branches: [main]
+    branches: [main, valheim-1.0-port]
     tags: ['v*']
   pull_request:
   workflow_dispatch:
@@ -91,7 +91,7 @@ jobs:
           cp -a Assets/. dist/SeedTotem/plugins/SeedTotem/
           cp package/manifest.json package/README.md package/CHANGELOG.md package/icon.png dist/SeedTotem/
           (cd dist/SeedTotem && zip -qr "$GITHUB_WORKSPACE/SeedTotem-4.3.4-Thunderstore.zip" .)
-          unzip -l SeedTotem-4.3.4-Thunderstore.zip
+          unzip -l "$GITHUB_WORKSPACE/SeedTotem-4.3.4-Thunderstore.zip"
 
       - name: Upload Thunderstore ZIP
         uses: actions/upload-artifact@v4
