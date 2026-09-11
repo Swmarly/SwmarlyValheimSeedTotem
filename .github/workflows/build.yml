@@ -62,7 +62,16 @@ jobs:
         shell: bash
         run: |
           if [ ! -f "$VALHEIM_INSTALL/valheim_server_Data/Managed/assembly_valheim.dll" ] && [ ! -f "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_valheim.dll" ]; then
-            steamcmd +force_install_dir "$VALHEIM_INSTALL" +login anonymous +app_info_update 1 +app_update 896660 validate +quit
+            installed=0
+            for attempt in 1 2 3; do
+              if steamcmd +force_install_dir "$VALHEIM_INSTALL" +login anonymous +app_info_update 1 +app_info_print 896660 +app_update 896660 validate +quit; then
+                installed=1
+                break
+              fi
+              echo "SteamCMD install attempt $attempt failed; retrying"
+              sleep 5
+            done
+            test "$installed" = 1
           fi
           if [ -d "$VALHEIM_INSTALL/valheim_server_Data" ] && [ ! -d "$VALHEIM_INSTALL/valheim_Data" ]; then
             mv "$VALHEIM_INSTALL/valheim_server_Data" "$VALHEIM_INSTALL/valheim_Data"
