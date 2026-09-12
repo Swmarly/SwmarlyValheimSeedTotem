@@ -129,7 +129,7 @@ namespace SeedTotem
 
         private static Sprite LoadAdvancedIcon(Sprite fallback)
         {
-            string path = SeedTotemMod.GetAssetPath("Assets/Icons/advanced_seed_totem_icon.png");
+            string path = SeedTotemMod.GetAssetPath("Icons/advanced_seed_totem_icon.png");
             if (path != null)
             {
                 try
