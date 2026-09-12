@@ -4,6 +4,7 @@ using Jotunn.Entities;
 using Jotunn.Managers;
 using SeedTotem.Utils;
 using System;
+using System.IO;
 using UnityEngine;
 using static SeedTotem.SeedTotemMod;
 using Logger = Jotunn.Logger;
@@ -49,7 +50,7 @@ namespace SeedTotem
         public void UpdateCopiedPrefab(AssetBundle assetBundle)
         {
             GameObject autoFieldSkeleton = assetBundle.LoadAsset<GameObject>(prefabName);
-            Sprite normalIcon = assetBundle.LoadAsset<Sprite>("seed_totem_icon");
+            Sprite advancedIcon = LoadAdvancedIcon(assetBundle.LoadAsset<Sprite>("seed_totem_icon"));
 
             // Build the model synchronously while the vanilla prefabs are available.
             // Jötunn's kitbash pass is intentionally asynchronous relative to piece
@@ -62,16 +63,15 @@ namespace SeedTotem
                 PieceTable = "Hammer",
                 CraftingStation = "piece_artisanstation",
                 Requirements = ParseRequirements(),
-                Icon = CreatePinkIcon(normalIcon)
+                Icon = advancedIcon
             }));
         }
 
         private static void ConfigureAutoFieldPrefab(GameObject autoFieldPrefab)
         {
-            Transform modelRoot = autoFieldPrefab.transform.Find("new");
             GameObject guardStone = PrefabManager.Instance.GetPrefab("guard_stone");
 
-            if (!modelRoot || !guardStone)
+            if (!guardStone)
             {
                 Logger.LogError("Could not prepare the Advanced Seed Totem model: guard_stone or new is missing");
                 return;
@@ -86,12 +86,12 @@ namespace SeedTotem
             }
 
             GameObject normalTotem = PrefabManager.Instance.GetPrefab(SeedTotemPrefabConfig.prefabName);
-            Transform normalModel = normalTotem ? normalTotem.transform.Find("new/default") : null;
-            Transform guardStoneModel = normalModel ?? guardStone.transform.Find("new/default");
-            GameObject model = ClonePart(guardStoneModel, modelRoot, "default", Vector3.zero, Quaternion.identity, Vector3.one);
+            Transform normalModelRoot = normalTotem ? normalTotem.transform.Find("new") : null;
+            normalModelRoot = normalModelRoot ?? guardStone.transform.Find("new");
+            GameObject model = ClonePart(normalModelRoot, autoFieldPrefab.transform, "SeedTotemModel", Vector3.zero, Quaternion.identity, Vector3.one);
             if (!model)
             {
-                Logger.LogError("Could not prepare the Advanced Seed Totem model: guard_stone/new/default is missing");
+                Logger.LogError("Could not prepare the Advanced Seed Totem model: normal Seed Totem new hierarchy is missing");
                 return;
             }
 
@@ -127,45 +127,26 @@ namespace SeedTotem
             }
         }
 
-        private static Sprite CreatePinkIcon(Sprite normalIcon)
+        private static Sprite LoadAdvancedIcon(Sprite fallback)
         {
-            if (!normalIcon || !normalIcon.texture)
+            string path = SeedTotemMod.GetAssetPath("Assets/Icons/advanced_seed_totem_icon.png");
+            if (path != null)
             {
-                return normalIcon;
-            }
-
-            try
-            {
-                Texture2D source = normalIcon.texture;
-                Color32[] pixels = source.GetPixels32();
-                Texture2D tinted = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false, true)
+                try
                 {
-                    name = "seed_totem_icon_pink",
-                    filterMode = FilterMode.Bilinear,
-                    wrapMode = TextureWrapMode.Clamp
-                };
-
-                for (int i = 0; i < pixels.Length; i++)
-                {
-                    Color color = pixels[i];
-                    if (color.g > 0.12f && color.g > color.r * 1.05f && color.g > color.b * 1.05f)
+                    byte[] bytes = File.ReadAllBytes(path);
+                    Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false, true);
+                    if (ImageConversion.LoadImage(texture, bytes, true))
                     {
-                        Color.RGBToHSV(color, out _, out float saturation, out float value);
-                        Color pink = Color.HSVToRGB(0.91f, Mathf.Max(0.7f, saturation), value);
-                        pink.a = color.a;
-                        pixels[i] = pink;
+                        texture.name = "advanced_seed_totem_icon";
+                        texture.filterMode = FilterMode.Bilinear;
+                        texture.wrapMode = TextureWrapMode.Clamp;
+                        return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 64f);
                     }
                 }
-
-                tinted.SetPixels32(pixels);
-                tinted.Apply(false, true);
-                return Sprite.Create(tinted, new Rect(0f, 0f, tinted.width, tinted.height), new Vector2(0.5f, 0.5f), normalIcon.pixelsPerUnit);
+                catch (Exception ex) { Logger.LogWarning("Could not load the Advanced Seed Totem icon: " + ex.Message); }
             }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("Could not tint the Advanced Seed Totem icon pink; using the normal icon: " + ex.Message);
-                return normalIcon;
-            }
+            return fallback;
         }
 
         private static GameObject ClonePart(Transform source, Transform parent, string name, Vector3 position, Quaternion rotation, Vector3 scale)

@@ -1,4 +1,8 @@
-# Swmarly Valheim Seed Totem 4.3.9
+# Swmarly Valheim Seed Totem 4.3.10
+
+- Rebuilt the Advanced Seed Totem from the normal Seed Totem's complete rendered model hierarchy so it renders and remains interactable.
+- Advanced model glow now uses pink while retaining rectangular advanced functionality.
+- Uses the supplied editable advanced build icon.
 
 - Simplified the Advanced Seed Totem to use the normal Seed Totem model.
 - Added a pink glow and matching pink build-menu icon for the Advanced Seed Totem.
