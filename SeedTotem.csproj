@@ -3,7 +3,7 @@
     <TargetFramework>net462</TargetFramework>
     <AssemblyName>SeedTotem</AssemblyName>
     <RootNamespace>SeedTotem</RootNamespace>
-    <Version>4.3.10</Version>
+    <Version>4.3.11</Version>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Deterministic>true</Deterministic>

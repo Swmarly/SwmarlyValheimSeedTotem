@@ -99,12 +99,12 @@ jobs:
           cp "bin/Release/SeedTotem.dll" dist/SeedTotem/plugins/SeedTotem/
           cp -a Assets/. dist/SeedTotem/plugins/SeedTotem/
           cp package/manifest.json package/README.md package/CHANGELOG.md package/icon.png dist/SeedTotem/
-          (cd dist/SeedTotem && zip -qr "$GITHUB_WORKSPACE/SwmarlyValheimSeedTotem-4.3.10-Thunderstore.zip" .)
-          unzip -l "$GITHUB_WORKSPACE/SwmarlyValheimSeedTotem-4.3.10-Thunderstore.zip"
+          (cd dist/SeedTotem && zip -qr "$GITHUB_WORKSPACE/SwmarlyValheimSeedTotem-4.3.11-Thunderstore.zip" .)
+          unzip -l "$GITHUB_WORKSPACE/SwmarlyValheimSeedTotem-4.3.11-Thunderstore.zip"
 
       - name: Upload Thunderstore ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: SwmarlyValheimSeedTotem-4.3.10-Thunderstore
+          name: SwmarlyValheimSeedTotem-4.3.11-Thunderstore
           path: dist/SeedTotem/*
           if-no-files-found: error

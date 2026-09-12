@@ -49,14 +49,15 @@ namespace SeedTotem
 
         public void UpdateCopiedPrefab(AssetBundle assetBundle)
         {
-            GameObject autoFieldSkeleton = assetBundle.LoadAsset<GameObject>(prefabName);
             Sprite advancedIcon = LoadAdvancedIcon(assetBundle.LoadAsset<Sprite>("seed_totem_icon"));
 
-            // Build the model synchronously while the vanilla prefabs are available.
-            // Jötunn's kitbash pass is intentionally asynchronous relative to piece
-            // registration; registering the unmodified skeleton first leaves Valheim
-            // with only its placeholder meshes when the pass fails or runs late.
-            ConfigureAutoFieldPrefab(autoFieldSkeleton);
+            // Start from the already-working normal Seed Totem prefab. This keeps the
+            // complete vanilla model, renderer hierarchy, colliders and interaction
+            // wiring intact. The old approach started from the bundle placeholder and
+            // tried to copy only part of the model, which could produce an invisible
+            // placed piece even though the prefab registered successfully.
+            GameObject autoFieldPrefab = PrefabManager.Instance.CreateClonedPrefab(prefabName, SeedTotemPrefabConfig.prefabName);
+            ConfigureAutoFieldPrefab(autoFieldPrefab, assetBundle);
 
             PieceManager.Instance.AddPiece(new CustomPiece(autoFieldSkeleton, true, new PieceConfig
             {
@@ -67,64 +68,41 @@ namespace SeedTotem
             }));
         }
 
-        private static void ConfigureAutoFieldPrefab(GameObject autoFieldPrefab)
+        private static void ConfigureAutoFieldPrefab(GameObject autoFieldPrefab, AssetBundle assetBundle)
         {
-            GameObject guardStone = PrefabManager.Instance.GetPrefab("guard_stone");
-
-            if (!guardStone)
+            if (!autoFieldPrefab)
             {
-                Logger.LogError("Could not prepare the Advanced Seed Totem model: guard_stone or new is missing");
-                return;
-            }
-
-            // The embedded prefab contains a small placeholder cube. Disable every
-            // renderer from the skeleton before attaching the real vanilla meshes so
-            // the placeholder cannot survive into the placed piece.
-            foreach (Renderer renderer in autoFieldPrefab.GetComponentsInChildren<Renderer>(true))
-            {
-                renderer.enabled = false;
-            }
-
-            GameObject normalTotem = PrefabManager.Instance.GetPrefab(SeedTotemPrefabConfig.prefabName);
-            Transform normalModelRoot = normalTotem ? normalTotem.transform.Find("new") : null;
-            normalModelRoot = normalModelRoot ?? guardStone.transform.Find("new");
-            GameObject model = ClonePart(normalModelRoot, autoFieldPrefab.transform, "SeedTotemModel", Vector3.zero, Quaternion.identity, Vector3.one);
-            if (!model)
-            {
-                Logger.LogError("Could not prepare the Advanced Seed Totem model: normal Seed Totem new hierarchy is missing");
+                Logger.LogError("Could not prepare the Advanced Seed Totem: normal Seed Totem clone was not created");
                 return;
             }
 
             SeedTotem seedTotem = autoFieldPrefab.GetComponent<SeedTotem>() ?? autoFieldPrefab.AddComponent<SeedTotem>();
             seedTotem.m_shape = SeedTotem.FieldShape.Rectangle;
             seedTotem.m_pinkGlow = true;
-            Transform wayEffectSource = guardStone.transform.Find("WayEffect");
-            if (wayEffectSource)
+
+            // Replace the normal circular marker with the rectangle marker from the
+            // original advanced prefab. The normal Seed Totem model is left untouched.
+            Transform oldMarker = autoFieldPrefab.transform.Find("AreaMarker");
+            if (oldMarker)
             {
-                GameObject wayEffect = Object.Instantiate(wayEffectSource.gameObject, autoFieldPrefab.transform);
-                wayEffect.name = "WayEffect";
-                seedTotem.m_enabledEffect = wayEffect;
+                Object.DestroyImmediate(oldMarker.gameObject);
             }
 
-            seedTotem.m_model = model.GetComponent<MeshRenderer>() ?? model.GetComponentInChildren<MeshRenderer>(true);
-            Animator animator = autoFieldPrefab.GetComponent<Animator>();
-            if (animator)
+            GameObject advancedSkeleton = assetBundle.LoadAsset<GameObject>(prefabName);
+            Transform markerSource = advancedSkeleton ? advancedSkeleton.transform.Find("AreaMarker") : null;
+            if (!markerSource)
             {
-                animator.enabled = false;
+                Logger.LogError("Could not prepare the Advanced Seed Totem rectangle marker: AreaMarker is missing");
+                return;
             }
 
-            Transform areaMarker = autoFieldPrefab.transform.Find("AreaMarker");
-            if (areaMarker)
-            {
-                RectangleProjector rectangleProjector = areaMarker.GetComponent<RectangleProjector>() ?? areaMarker.gameObject.AddComponent<RectangleProjector>();
-                seedTotem.m_rectangleProjector = rectangleProjector;
-            }
-
-            SetLayerRecursively(autoFieldPrefab, LayerMask.NameToLayer("piece"));
-            if (seedTotem.m_model && seedTotem.m_enabledEffect)
-            {
-                seedTotem.UpdateVisuals();
-            }
+            GameObject marker = Object.Instantiate(markerSource.gameObject, autoFieldPrefab.transform);
+            marker.name = "AreaMarker";
+            RectangleProjector rectangleProjector = marker.GetComponent<RectangleProjector>() ?? marker.AddComponent<RectangleProjector>();
+            seedTotem.m_rectangleProjector = rectangleProjector;
+            seedTotem.m_model = autoFieldPrefab.transform.Find("new/default")?.GetComponent<MeshRenderer>();
+            SetLayerRecursively(marker, LayerMask.NameToLayer("piece"));
+            Logger.LogInfo("Advanced Seed Totem uses normal model: " + (seedTotem.m_model ? "renderer found" : "renderer missing"));
         }
 
         private static Sprite LoadAdvancedIcon(Sprite fallback)
