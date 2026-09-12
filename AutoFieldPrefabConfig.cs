@@ -49,7 +49,7 @@ namespace SeedTotem
         public void UpdateCopiedPrefab(AssetBundle assetBundle)
         {
             GameObject autoFieldSkeleton = assetBundle.LoadAsset<GameObject>(prefabName);
-            Sprite autoFieldIcon = assetBundle.LoadAsset<Sprite>("auto_field_icon");
+            Sprite normalIcon = assetBundle.LoadAsset<Sprite>("seed_totem_icon");
 
             // Build the model synchronously while the vanilla prefabs are available.
             // Jötunn's kitbash pass is intentionally asynchronous relative to piece
@@ -62,7 +62,7 @@ namespace SeedTotem
                 PieceTable = "Hammer",
                 CraftingStation = "piece_artisanstation",
                 Requirements = ParseRequirements(),
-                Icon = autoFieldIcon
+                Icon = CreatePinkIcon(normalIcon)
             }));
         }
 
@@ -85,45 +85,19 @@ namespace SeedTotem
                 renderer.enabled = false;
             }
 
-            Transform guardStoneModel = FindSourceTransform(guardStone, "new/default", "default");
-            GameObject model = ClonePart(guardStoneModel, modelRoot, "default", Vector3.zero, Quaternion.identity, Vector3.one * 0.6f);
+            GameObject normalTotem = PrefabManager.Instance.GetPrefab(SeedTotemPrefabConfig.prefabName);
+            Transform normalModel = normalTotem ? normalTotem.transform.Find("new/default") : null;
+            Transform guardStoneModel = normalModel ?? guardStone.transform.Find("new/default");
+            GameObject model = ClonePart(guardStoneModel, modelRoot, "default", Vector3.zero, Quaternion.identity, Vector3.one);
             if (!model)
             {
                 Logger.LogError("Could not prepare the Advanced Seed Totem model: guard_stone/new/default is missing");
                 return;
             }
 
-            // These parts are optional decorations. Exact paths cover the current
-            // Valheim 1.0 prefabs; name fallbacks keep the model usable across small
-            // vanilla hierarchy changes instead of aborting the whole model.
-            GameObject spinningWheel = PrefabManager.Instance.GetPrefab("piece_spinning_wheel")
-                ?? PrefabManager.Instance.GetPrefab("piece_spinningwheel");
-            Transform hopperSource = FindSourceTransform(
-                spinningWheel,
-                "SpinningWheel_Destruction/SpinningWheel_Destruction.002_SpinningWheel_Broken.018",
-                "SpinningWheel_Broken");
-            ClonePart(hopperSource, modelRoot, "hopper", new Vector3(0.29f, 1.12f, 1.26f),
-                Quaternion.Euler(177.7f, -258.918f, -89.55298f), Vector3.one);
-
-            GameObject artisanStation = PrefabManager.Instance.GetPrefab("piece_artisanstation");
-            Transform leftGearSource = FindSourceTransform(
-                artisanStation,
-                "ArtisanTable_Destruction/ArtisanTable_Destruction.007_ArtisanTable.019",
-                "ArtisanTable.007_ArtisanTable.019");
-            Transform rightGearSource = FindSourceTransform(
-                artisanStation,
-                "ArtisanTable_Destruction/ArtisanTable_Destruction.006_ArtisanTable.018",
-                "ArtisanTable.006_ArtisanTable.018");
-
-            GameObject leftGear = ClonePart(leftGearSource, modelRoot.Find("pivot_left"), "gear_left",
-                new Vector3(-0.383f, 0.8181f, -0.8028001f),
-                Quaternion.Euler(0f, -90.00001f, -90.91601f), Vector3.one * 0.68285f);
-            GameObject rightGear = ClonePart(rightGearSource, modelRoot.Find("pivot_right"), "gear_right",
-                new Vector3(-0.47695f, 0.5057697f, -0.7557001f),
-                Quaternion.Euler(0f, -90.00001f, -90.91601f), Vector3.one * 0.68285f);
-
             SeedTotem seedTotem = autoFieldPrefab.GetComponent<SeedTotem>() ?? autoFieldPrefab.AddComponent<SeedTotem>();
             seedTotem.m_shape = SeedTotem.FieldShape.Rectangle;
+            seedTotem.m_pinkGlow = true;
             Transform wayEffectSource = guardStone.transform.Find("WayEffect");
             if (wayEffectSource)
             {
@@ -133,8 +107,11 @@ namespace SeedTotem
             }
 
             seedTotem.m_model = model.GetComponent<MeshRenderer>() ?? model.GetComponentInChildren<MeshRenderer>(true);
-            seedTotem.m_gearLeft = leftGear?.GetComponentInChildren<MeshRenderer>(true);
-            seedTotem.m_gearRight = rightGear?.GetComponentInChildren<MeshRenderer>(true);
+            Animator animator = autoFieldPrefab.GetComponent<Animator>();
+            if (animator)
+            {
+                animator.enabled = false;
+            }
 
             Transform areaMarker = autoFieldPrefab.transform.Find("AreaMarker");
             if (areaMarker)
@@ -147,6 +124,47 @@ namespace SeedTotem
             if (seedTotem.m_model && seedTotem.m_enabledEffect)
             {
                 seedTotem.UpdateVisuals();
+            }
+        }
+
+        private static Sprite CreatePinkIcon(Sprite normalIcon)
+        {
+            if (!normalIcon || !normalIcon.texture)
+            {
+                return normalIcon;
+            }
+
+            try
+            {
+                Texture2D source = normalIcon.texture;
+                Color32[] pixels = source.GetPixels32();
+                Texture2D tinted = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false, true)
+                {
+                    name = "seed_totem_icon_pink",
+                    filterMode = FilterMode.Bilinear,
+                    wrapMode = TextureWrapMode.Clamp
+                };
+
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    Color color = pixels[i];
+                    if (color.g > 0.12f && color.g > color.r * 1.05f && color.g > color.b * 1.05f)
+                    {
+                        Color.RGBToHSV(color, out _, out float saturation, out float value);
+                        Color pink = Color.HSVToRGB(0.91f, Mathf.Max(0.7f, saturation), value);
+                        pink.a = color.a;
+                        pixels[i] = pink;
+                    }
+                }
+
+                tinted.SetPixels32(pixels);
+                tinted.Apply(false, true);
+                return Sprite.Create(tinted, new Rect(0f, 0f, tinted.width, tinted.height), new Vector2(0.5f, 0.5f), normalIcon.pixelsPerUnit);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("Could not tint the Advanced Seed Totem icon pink; using the normal icon: " + ex.Message);
+                return normalIcon;
             }
         }
 
@@ -163,35 +181,6 @@ namespace SeedTotem
             part.transform.localRotation = rotation;
             part.transform.localScale = scale;
             return part;
-        }
-
-        private static Transform FindSourceTransform(GameObject prefab, string preferredPath, params string[] fallbackNames)
-        {
-            if (!prefab)
-            {
-                return null;
-            }
-
-            Transform result = prefab.transform.Find(preferredPath);
-            if (result)
-            {
-                return result;
-            }
-
-            Transform[] transforms = prefab.GetComponentsInChildren<Transform>(true);
-            foreach (string fallbackName in fallbackNames)
-            {
-                foreach (Transform candidate in transforms)
-                {
-                    if (candidate.name.IndexOf(fallbackName, StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        return candidate;
-                    }
-                }
-            }
-
-            Logger.LogWarning("Advanced Seed Totem decoration was not found: " + preferredPath);
-            return null;
         }
 
         private static void SetLayerRecursively(GameObject root, int layer)
