@@ -26,7 +26,7 @@ namespace SeedTotem
     {
         public const string PluginGUID = "marcopogo.SeedTotem";
         public const string PluginName = "Swmarly Valheim Seed Totem";
-        public const string PluginVersion = "4.3.7";
+        public const string PluginVersion = "4.3.9";
         private SeedTotemPrefabConfig seedTotemPrefabConfig;
         private Harmony harmony; 
 
