@@ -74,11 +74,12 @@ namespace SeedTotem
                             Position = new Vector3(0.29f, 1.12f, 1.26f),
                             Rotation = Quaternion.Euler(177.7f, -258.918f, -89.55298f),
                             Scale = Vector3.one,
-                            SourcePrefab = "piece_spinningwheel",
-                            SourcePath = "SpinningWheel_Destruction/SpinningWheel_Destruction_SpinningWheel_Broken.016",
+                            SourcePrefab = "piece_spinning_wheel",
+                            SourcePath = "SpinningWheel_Destruction/SpinningWheel_Destruction.002_SpinningWheel_Broken.018",
                             Materials = new string[]
                             {
-                                "SpinningWheel_mat"
+                                "SpinningWheel_mat",
+                                "TearChanal_mat"
                             }
                         },
                         new KitbashSourceConfig
