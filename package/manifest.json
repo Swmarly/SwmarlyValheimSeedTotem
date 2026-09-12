@@ -2,7 +2,7 @@
   "name": "SwmarlyValheimSeedTotem",
   "author": "Swmarly",
   "description": "Unofficial Valheim 1.0 port of the original SeedTotem mod. Automatically plant seeds and harvest nearby plants.",
-  "version_number": "4.3.6",
+  "version_number": "4.3.7",
   "website_url": "https://github.com/Swmarly/SwmarlyValheimSeedTotem",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2350",
