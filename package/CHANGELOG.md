@@ -1,4 +1,8 @@
-# Swmarly Valheim Seed Totem 4.3.11
+# Swmarly Valheim Seed Totem 4.3.12
+
+- Fixed advanced Seed Totem localization so it is shown as Advanced seed totem.
+- Advanced instances now force their pink glow at runtime instead of inheriting the green graphical config.
+- Fixed the stone body being washed out by restricting emission toggling to the glow material only.
 
 - Advanced Seed Totem now clones the complete working normal Seed Totem prefab, guaranteeing the normal visible model and interaction setup.
 - Advanced rectangle marker and pink glow remain enabled.

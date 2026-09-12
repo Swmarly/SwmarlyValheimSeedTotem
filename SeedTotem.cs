@@ -114,6 +114,10 @@ namespace SeedTotem
             if (name.StartsWith(AutoFieldPrefabConfig.prefabName))
             {
                 m_shape = FieldShape.Rectangle;
+                // This is a runtime field, so it cannot be relied on to survive
+                // Jotunn/Unity prefab instantiation. Detect the advanced prefab on
+                // every placed instance so its model never falls back to green.
+                m_pinkGlow = true;
                 Transform areaMarker = transform.Find("AreaMarker");
                 m_rectangleProjector = areaMarker ? areaMarker.GetComponent<RectangleProjector>() : null;
                 m_animator = GetComponent<Animator>();
@@ -402,6 +406,10 @@ namespace SeedTotem
         {
             foreach (Material material in materials)
             {
+                if (!material || !material.name.StartsWith("Guardstone_OdenGlow_mat"))
+                {
+                    continue;
+                }
                 if (active)
                 {
                     material.EnableKeyword("_EMISSION");

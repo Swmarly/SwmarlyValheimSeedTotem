@@ -80,6 +80,20 @@ namespace SeedTotem
             seedTotem.m_shape = SeedTotem.FieldShape.Rectangle;
             seedTotem.m_pinkGlow = true;
 
+            Piece piece = autoFieldPrefab.GetComponent<Piece>();
+            if (piece)
+            {
+                piece.m_name = "$piece_seed_totem_auto_field_name";
+                piece.m_description = "$piece_seed_totem_auto_field_description";
+            }
+            foreach (GuidePoint guidePoint in autoFieldPrefab.GetComponentsInChildren<GuidePoint>(true))
+            {
+                guidePoint.m_text.m_key = "auto_field";
+                guidePoint.m_text.m_topic = "$tutorial_auto_field_topic";
+                guidePoint.m_text.m_text = "$tutorial_auto_field_text";
+                guidePoint.m_text.m_label = "$tutorial_auto_field_label";
+            }
+
             // Replace the normal circular marker with the rectangle marker from the
             // original advanced prefab. The normal Seed Totem model is left untouched.
             Transform oldMarker = autoFieldPrefab.transform.Find("AreaMarker");
