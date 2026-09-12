@@ -59,7 +59,7 @@ namespace SeedTotem
             GameObject autoFieldPrefab = PrefabManager.Instance.CreateClonedPrefab(prefabName, SeedTotemPrefabConfig.prefabName);
             ConfigureAutoFieldPrefab(autoFieldPrefab, assetBundle);
 
-            PieceManager.Instance.AddPiece(new CustomPiece(autoFieldSkeleton, true, new PieceConfig
+            PieceManager.Instance.AddPiece(new CustomPiece(autoFieldPrefab, true, new PieceConfig
             {
                 PieceTable = "Hammer",
                 CraftingStation = "piece_artisanstation",
