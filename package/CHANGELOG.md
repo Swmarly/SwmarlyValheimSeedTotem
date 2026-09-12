@@ -1,3 +1,8 @@
+# Swmarly Valheim Seed Totem 4.3.6
+
+- Restored the Advanced Seed Totem building piece registration for Valheim 1.0.
+- The Advanced Seed Totem is available from the Hammer near an Artisan Table.
+
 # Swmarly Valheim Seed Totem 4.3.5
 
 - Removed the obsolete legacy updater configuration entry.
