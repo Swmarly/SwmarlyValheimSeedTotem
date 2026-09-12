@@ -1,9 +1,8 @@
-# Swmarly Valheim Seed Totem 4.3.8
+# Swmarly Valheim Seed Totem 4.3.9
 
-- Rebuilt the Advanced Seed Totem model synchronously from current Valheim vanilla prefabs.
-- Removed the broken placeholder-mesh dependency on delayed Jötunn kitbash registration.
-- Added safe fallbacks for small vanilla prefab hierarchy changes.
-- Kept the Advanced Seed Totem available from the Hammer near an Artisan Table.
+- Simplified the Advanced Seed Totem to use the normal Seed Totem model.
+- Added a pink glow and matching pink build-menu icon for the Advanced Seed Totem.
+- Removed the broken advanced-only hopper and gear model assembly.
 
 # Swmarly Valheim Seed Totem 4.3.7
 
