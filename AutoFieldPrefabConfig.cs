@@ -2,6 +2,7 @@
 using Jotunn.Configs;
 using Jotunn.Entities;
 using Jotunn.Managers;
+using SeedTotem.Utils;
 using System;
 using UnityEngine;
 using static SeedTotem.SeedTotemMod;
