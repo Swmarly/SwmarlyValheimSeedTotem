@@ -4,7 +4,7 @@ This is an unofficial Valheim 1.0 port of the original SeedTotem mod.
 
 The Seed Totem disperses stored seeds in an area around it.
 
-Place the totem using the Cultivator. It costs:
+Place the normal totem using the Hammer by default. The build menu can be changed in the configuration. It costs:
 
     5 Fine Wood
     5 Greydwarf Eyes
@@ -19,8 +19,8 @@ Give the totem a whack to harvest all ready plants in the area. (Trees are not h
 
 ## Advanced seed totem
 
-Construct a modified seed totem with the Artisan Table. It plants in a rectangular area and
-costs 10 Fine Wood, 10 Greydwarf Eyes, 2 Surtling Cores, and 1 Ancient Seed.
+Select the Hammer while near an Artisan Table to place the Advanced Seed Totem. It plants in a
+rectangular area and costs 10 Fine Wood, 10 Greydwarf Eyes, 2 Surtling Cores, and 1 Ancient Seed.
 
 ## Configuration
 
