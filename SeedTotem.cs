@@ -113,20 +113,22 @@ namespace SeedTotem
             if (name.StartsWith(AutoFieldPrefabConfig.prefabName))
             {
                 m_shape = FieldShape.Rectangle;
-                m_rectangleProjector = transform.Find("AreaMarker").GetComponent<RectangleProjector>();
+                Transform areaMarker = transform.Find("AreaMarker");
+                m_rectangleProjector = areaMarker ? areaMarker.GetComponent<RectangleProjector>() : null;
                 m_animator = GetComponent<Animator>();
-                m_gearLeft = transform.Find("new/pivot_left/gear_left").GetComponent<MeshRenderer>();
-                m_gearRight = transform.Find("new/pivot_right/gear_right").GetComponent<MeshRenderer>();
+                m_gearLeft = transform.Find("new/pivot_left/gear_left")?.GetComponent<MeshRenderer>();
+                m_gearRight = transform.Find("new/pivot_right/gear_right")?.GetComponent<MeshRenderer>();
                
             }
 
             if (!m_enabledEffect)
             {
-                m_enabledEffect = transform.Find("WayEffect").gameObject;
+                Transform wayEffect = transform.Find("WayEffect");
+                m_enabledEffect = wayEffect ? wayEffect.gameObject : null;
             }
             if (!m_model)
             {
-                m_model = transform.Find("new/default").GetComponent<MeshRenderer>();
+                m_model = transform.Find("new/default")?.GetComponent<MeshRenderer>();
             }
             if (!m_areaMarker)
             {
@@ -285,6 +287,12 @@ namespace SeedTotem
         public void UpdateVisuals()
         {
             Logger.LogDebug("Updating color of SeedTotem at " + transform.position);
+            if (!m_model || !m_enabledEffect)
+            {
+                Logger.LogWarning("Seed Totem model or effect is missing on " + name);
+                return;
+            }
+
             Material[] materials = m_model.materials;
             Color color = configGlowColor.Value;
             foreach (Material material in materials)
@@ -366,15 +374,27 @@ namespace SeedTotem
 
         private void UpdateMaterials(bool active)
         {
-            m_enabledEffect.SetActive(active);
+            if (m_enabledEffect)
+            {
+                m_enabledEffect.SetActive(active);
+            }
 
             if (m_animator)
             {
                 m_animator.enabled = active;
-                SetEmission(m_gearLeft.materials, active);
-                SetEmission(m_gearRight.materials, active);
+                if (m_gearLeft)
+                {
+                    SetEmission(m_gearLeft.materials, active);
+                }
+                if (m_gearRight)
+                {
+                    SetEmission(m_gearRight.materials, active);
+                }
             }
-            SetEmission(m_model.materials, active);
+            if (m_model)
+            {
+                SetEmission(m_model.materials, active);
+            }
         }
 
         private static void SetEmission(Material[] materials, bool active)
