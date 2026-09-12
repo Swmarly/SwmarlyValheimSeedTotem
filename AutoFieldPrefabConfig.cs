@@ -126,14 +126,18 @@ namespace SeedTotem
                 RectangleProjector rectangleProjector = autoFieldKitbash.Prefab.transform.Find("AreaMarker").gameObject.AddComponent<RectangleProjector>();
                 seedTotem.m_rectangleProjector = rectangleProjector;
 
-                PieceManager.Instance.AddPiece(new CustomPiece(autoFieldKitbash.Prefab, true, new PieceConfig
-                {
-                    PieceTable = "Hammer",
-                    CraftingStation = "piece_artisanstation",
-                    Requirements = ParseRequirements(),
-                    Icon = autoFieldIcon
-                }));
+
             };
+
+            // Register before Jotunn's kitbash pass completes. The kitbash callback
+            // runs later than the normal PieceManager registration pass.
+            PieceManager.Instance.AddPiece(new CustomPiece(autoFieldKitbash.Prefab, true, new PieceConfig
+            {
+                PieceTable = "Hammer",
+                CraftingStation = "piece_artisanstation",
+                Requirements = ParseRequirements(),
+                Icon = autoFieldIcon
+            }));
         }
 
         internal void UpdatePieceLocation()
