@@ -26,8 +26,7 @@ namespace SeedTotem
     {
         public const string PluginGUID = "marcopogo.SeedTotem";
         public const string PluginName = "Swmarly Valheim Seed Totem";
-        public const string PluginVersion = "4.3.4";
-        public ConfigEntry<int> nexusID;
+        public const string PluginVersion = "4.3.5";
         private SeedTotemPrefabConfig seedTotemPrefabConfig;
         private Harmony harmony; 
 
@@ -89,9 +88,22 @@ namespace SeedTotem
             SeedTotem.configWidthDecrementButton = Config.Bind("Input", "Decrement seed totem width", new KeyboardShortcut(KeyCode.LeftArrow));
             SeedTotem.configLengthIncrementButton = Config.Bind("Input", "Increment seed totem length", new KeyboardShortcut(KeyCode.UpArrow));
             SeedTotem.configLengthDecrementButton = Config.Bind("Input", "Decrement seed totem length", new KeyboardShortcut(KeyCode.DownArrow));
-            nexusID = Config.Bind("General", "NexusID", 876, new ConfigDescription("Nexus mod ID for updates", new AcceptableValueList<int>(new int[] { 876 })));
-
             SeedTotemPrefabConfig.configLocation = Config.Bind("UI", "Build menu", PieceLocation.Hammer, "In which build menu is the Seed totem located");
+
+            RemoveObsoleteConfiguration();
+        }
+
+        private void RemoveObsoleteConfiguration()
+        {
+            var obsolete = new ConfigDefinition("General", "NexusID");
+            Config.Remove(obsolete);
+
+            var orphanedEntries = typeof(ConfigFile)
+                .GetProperty("OrphanedEntries", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.GetValue(Config, null) as System.Collections.IDictionary;
+            orphanedEntries?.Remove(obsolete);
+
+            Config.Save();
         }
 
         private void OnPiecesRegistered()
