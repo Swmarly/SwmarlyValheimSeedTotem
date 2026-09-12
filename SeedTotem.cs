@@ -82,6 +82,7 @@ namespace SeedTotem
         internal MeshRenderer m_model;
         internal MeshRenderer m_gearLeft;
         internal MeshRenderer m_gearRight;
+        internal bool m_pinkGlow;
 
         public static EffectList m_disperseEffects = new EffectList();
         private static int m_spaceMask;
@@ -294,7 +295,7 @@ namespace SeedTotem
             }
 
             Material[] materials = m_model.materials;
-            Color color = configGlowColor.Value;
+            Color color = m_pinkGlow ? new Color(1f, 0.05f, 0.65f, 1f) : configGlowColor.Value;
             foreach (Material material in materials)
             {
                 string lookFor = "Guardstone_OdenGlow_mat";
@@ -327,7 +328,7 @@ namespace SeedTotem
 
             GameObject pointLightObject = m_enabledEffect.transform.Find("Point light").gameObject;
             Light light = pointLightObject.GetComponent<Light>();
-            light.color = configLightColor.Value;
+                light.color = m_pinkGlow ? new Color(1f, 0.05f, 0.65f, 1f) : configLightColor.Value;
             light.intensity = configLightIntensity.Value;
 
             if (m_shape == FieldShape.Circle)
@@ -356,7 +357,7 @@ namespace SeedTotem
             GameObject flareGameObject = m_enabledEffect.transform.Find("flare").gameObject;
             ParticleSystem flare = flareGameObject.GetComponent<ParticleSystem>();
             ParticleSystem.MainModule flareMain = flare.main;
-            flareMain.startColor = new ParticleSystem.MinMaxGradient(configFlareColor.Value);
+            flareMain.startColor = new ParticleSystem.MinMaxGradient(m_pinkGlow ? new Color(1f, 0.05f, 0.65f, 1f) : configFlareColor.Value);
             flareMain.startSize = new ParticleSystem.MinMaxCurve(configFlareSize.Value);
         }
 
