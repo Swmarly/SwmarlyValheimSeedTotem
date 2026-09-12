@@ -22,8 +22,8 @@ Give the totem a whack to harvest all ready plants in the area. (Trees are not h
 Select the Hammer while near an Artisan Table to place the Advanced Seed Totem. It plants in a
 rectangular area and costs 10 Fine Wood, 10 Greydwarf Eyes, 2 Surtling Cores, and 1 Ancient Seed.
 
-Its model is assembled from the current Valheim 1.0 vanilla prefabs so the port remains visible
-and placeable in-game.
+The Advanced Seed Totem uses the normal Seed Totem model with a pink glow. It plants in a
+rectangular area while keeping the same reliable in-game model as the normal totem.
 
 ## Configuration
 
