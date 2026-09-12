@@ -1,4 +1,6 @@
-# Swmarly Valheim Seed Totem 4.3.12
+# Swmarly Valheim Seed Totem 4.3.13
+
+- Fixed the advanced build-menu icon being washed out/white by loading the supplied PNG with the correct sRGB color space.
 
 - Fixed advanced Seed Totem localization so it is shown as Advanced seed totem.
 - Advanced instances now force their pink glow at runtime instead of inheriting the green graphical config.

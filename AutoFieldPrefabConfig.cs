@@ -127,7 +127,9 @@ namespace SeedTotem
                 try
                 {
                     byte[] bytes = File.ReadAllBytes(path);
-                    Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false, true);
+                    // The supplied PNG is an sRGB UI texture. Loading it as linear
+                    // makes the brown stone body appear washed out/white in-game.
+                    Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false, false);
                     if (ImageConversion.LoadImage(texture, bytes, true))
                     {
                         texture.name = "advanced_seed_totem_icon";
