@@ -1,3 +1,8 @@
+# Swmarly Valheim Seed Totem 4.3.5
+
+- Removed the obsolete legacy updater configuration entry.
+- Automatically cleans that retired entry from existing configuration files.
+
 # Swmarly Valheim Seed Totem 4.3.4
 
 - Renamed and rebranded as Swmarly Valheim Seed Totem.
