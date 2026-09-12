@@ -1,3 +1,8 @@
+# Swmarly Valheim Seed Totem 4.3.7
+
+- Updated the Advanced Seed Totem kitbash to the current Valheim spinning-wheel prefab and mesh paths.
+- Restored the complete Advanced Seed Totem model and materials.
+
 # Swmarly Valheim Seed Totem 4.3.6
 
 - Restored the Advanced Seed Totem building piece registration for Valheim 1.0.
